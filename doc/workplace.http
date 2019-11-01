@@ -1,0 +1,19 @@
+POST http://localhost:8080/workplace
+Content-Type: application/json
+Authorization: Basic admin password
+
+{
+    "Name": "GreatPlaceToWork5",
+    "Location": "Room 111",
+    "Ranking": 3
+}
+
+###
+
+GET http://localhost:8080/workplace/
+
+###
+
+DELETE http://localhost:8080/workplace/GreatPlaceToWork1
+Content-Type: application/json
+Authorization: Basic admin password

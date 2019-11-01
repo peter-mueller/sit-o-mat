@@ -1,0 +1,34 @@
+POST http://localhost:8080/user
+Content-Type: application/json
+Authorization: Basic admin password
+
+{
+    "Name": "hans.mueller"
+}
+
+###
+
+GET http://localhost:8080/user/p.mueller
+Content-Type: application/json
+
+###
+
+PATCH http://localhost:8080/user/p.mueller
+Content-Type: application/json
+Authorization: Basic p.mueller NXsrNDKo
+
+{
+    "op": "replace",
+    "path": "/WeeklyRequests",
+    "value":  {
+        "Montag": true,
+        "Dienstag": true,
+        "Mittwoch": true,
+        "Donnerstag": false,
+        "Freitag": true
+    }
+}
+
+###
+DELETE http://localhost:8080/user/p.mueller
+Authorization: Basic admin password
