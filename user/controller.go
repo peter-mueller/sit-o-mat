@@ -126,6 +126,23 @@ func (c *Controller) PatchUser(w http.ResponseWriter, r *http.Request, ps httpro
 		err = json.NewEncoder(w).Encode(&user)
 		handle(err)
 		return
+	} else if patch.Operation == "replace" && patch.Path == "/Password" {
+		var password string
+		err = json.Unmarshal(patch.Value, &password)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		user.Password = password
+		user, err = c.Service.UpdateUser(ctx, user)
+		handle(err)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		err = json.NewEncoder(w).Encode(&user)
+		handle(err)
+		return
 	}
 	w.WriteHeader(http.StatusBadRequest)
 
