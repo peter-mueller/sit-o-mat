@@ -46,10 +46,10 @@ func (s Service) AssignWorkplaces(ctx context.Context) error {
 
 	for index, workplace := range workplaces {
 		if index >= len(filteredUsers) {
-			break
+			workplace.CurrentOwner = ""
+		} else {
+			workplace.CurrentOwner = filteredUsers[index].Name
 		}
-		workplace.CurrentOwner = filteredUsers[index].Name
-
 		_, err := s.WorkplaceService.UpdateWorkplace(ctx, workplace)
 		if err != nil {
 			return httperror.Wrap("failed to assign workplace", err)
