@@ -39,7 +39,7 @@ func (s *Service) CreateWorkplace(ctx context.Context, w Workplace) (Workplace, 
 }
 
 func (s *Service) FindAllWorkplacesSortByRating(ctx context.Context) ([]Workplace, error) {
-	iter := s.Collection.Query().OrderBy("Rating", docstore.Ascending).Get(ctx)
+	iter := s.Collection.Query().OrderBy("Ranking", docstore.Ascending).Get(ctx)
 	defer iter.Stop()
 
 	workplaces := make([]Workplace, 0)
