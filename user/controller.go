@@ -30,6 +30,8 @@ func (c *Controller) RegisterUser(w http.ResponseWriter, r *http.Request, _ http
 	user, err = c.Service.RegisterUser(ctx, user.Name)
 	handle(err)
 
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(&struct {
 		User     User
 		Password string
@@ -48,6 +50,7 @@ func (c *Controller) GetUser(w http.ResponseWriter, r *http.Request, ps httprout
 	user, err := c.Service.FindUserByName(ctx, user.Name)
 	handle(err)
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(user)
 }
@@ -118,6 +121,7 @@ func (c *Controller) PatchUser(w http.ResponseWriter, r *http.Request, ps httpro
 		user, err = c.Service.UpdateUser(ctx, user)
 		handle(err)
 
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		err = json.NewEncoder(w).Encode(&user)
 		handle(err)

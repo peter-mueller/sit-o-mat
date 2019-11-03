@@ -92,6 +92,7 @@ func panicHandler(w http.ResponseWriter, r *http.Request, data interface{}) {
 
 	var httperr httperror.Error
 	if errors.As(err, &httperr) {
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(httperr.Status)
 		json.NewEncoder(w).Encode(httperr)
 		return

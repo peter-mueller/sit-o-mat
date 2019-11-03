@@ -31,6 +31,7 @@ func (c *Controller) CreateWorkplace(w http.ResponseWriter, r *http.Request, ps 
 	workplace, err = c.Service.CreateWorkplace(ctx, workplace)
 	handle(err)
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(workplace)
 }
@@ -59,6 +60,7 @@ func (c *Controller) GetAllWorkplaces(w http.ResponseWriter, r *http.Request, ps
 		}
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(filteredWorkplaces)
 }
