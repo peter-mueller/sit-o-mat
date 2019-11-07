@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: Basic admin password
 
 {
-    "Name": "hans.mueller"
+    "Name": "p.mueller"
 }
 
 ###
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 PATCH http://localhost:8080/user/p.mueller
 Content-Type: application/json
-Authorization: Basic p.mueller NXsrNDKo
+Authorization: Basic p.mueller A8eGmtDp
 
 {
     "op": "replace",
@@ -24,7 +24,7 @@ Authorization: Basic p.mueller NXsrNDKo
         "Montag": true,
         "Dienstag": true,
         "Mittwoch": true,
-        "Donnerstag": false,
+        "Donnerstag": true,
         "Freitag": true
     }
 }
