@@ -18,9 +18,11 @@
   "license": "MIT",
   "dependencies": {
     "@material/mwc-button": "^0.10.0",
+    "@material/mwc-checkbox": "^0.10.0",
     "@material/mwc-dialog": "^0.10.0",
     "@material/mwc-drawer": "^0.10.0",
     "@material/mwc-icon-button": "^0.10.0",
+    "@material/mwc-snackbar": "^0.10.0",
     "@material/mwc-textfield": "^0.10.0",
     "@material/mwc-top-app-bar": "^0.10.0",
     "@material/mwc-top-app-bar-fixed": "^0.10.0",

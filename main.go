@@ -59,6 +59,11 @@ func main() {
 	sitomatController := sitomat.Controller{Service: &sitomatService}
 
 	r := httprouter.New()
+	// r.GlobalOPTIONS = http.HandlerFunc(corsHandler)
+	r.HandleOPTIONS = true
+	r.HandleMethodNotAllowed = true
+	r.GlobalOPTIONS = http.HandlerFunc(corsHandler)
+
 	r.POST("/user", userController.RegisterUser)
 	r.GET("/user/:name", userController.GetUser)
 	r.DELETE("/user/:name", userController.DeleteUser)
@@ -73,7 +78,7 @@ func main() {
 
 	fmt.Println("Starting Server")
 	srv := &http.Server{
-		Handler: r,
+		Handler: corsDecorator{r},
 		Addr:    "127.0.0.1:8080",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
@@ -100,4 +105,32 @@ func panicHandler(w http.ResponseWriter, r *http.Request, data interface{}) {
 	}
 
 	w.WriteHeader(http.StatusInternalServerError)
+}
+
+func corsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("Access-Control-Request-Method") != "" {
+		// Set CORS headers
+		header := w.Header()
+		header.Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, PUT")
+		header.Set("Access-Control-Allow-Headers", "*")
+	}
+
+	if origin := r.Header.Get("Origin"); origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+	}
+
+	// Adjust status code to 204
+	w.WriteHeader(http.StatusNoContent)
+}
+
+type corsDecorator struct {
+	router *httprouter.Router
+}
+
+func (c corsDecorator) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if origin := r.Header.Get("Origin"); origin != "" {
+		w.Header().Set("Access-Control-Allow-Origin", origin)
+	}
+
+	c.router.ServeHTTP(w, r)
 }

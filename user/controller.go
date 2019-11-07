@@ -43,15 +43,28 @@ func (c *Controller) RegisterUser(w http.ResponseWriter, r *http.Request, _ http
 }
 
 func (c *Controller) GetUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	user := User{
-		Name: ps.ByName("name"),
+
+	username, password, ok := r.BasicAuth()
+	if !ok || username != ps.ByName("name") {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
 	}
+	user := User{
+		Name:     ps.ByName("name"),
+		Password: password,
+	}
+
 	ctx := context.Background()
-	user, err := c.Service.FindUserByName(ctx, user.Name)
+	ok, err := c.Service.LoginUser(ctx, user)
+	handle(err)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	user, err = c.Service.FindUserByName(ctx, user.Name)
 	handle(err)
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(user)
 }
 
