@@ -12,12 +12,14 @@ import '../sitomat-workplace/sitomat-workplace'
 import '../sitomat-weekdays/sitomat-weekdays'
 import * as notification from '../notification/notification';
 import * as userAPI from '../api/user'
+import * as workplaceAPI from '../api/workplace'
 
 
 export class SitOMat extends LitElement {
   static get properties() {
     return {
-      user: { type: Object }
+      user: { type: Object },
+      workplaces: { type: Array }
     };
   }
 
@@ -27,8 +29,26 @@ export class SitOMat extends LitElement {
     this.user = {
       WeeklyRequests: {},
     };
+    this.workplaces = [];
 
     window.addEventListener('sitomat-notify', this.onNotify.bind(this));
+
+
+    this._loadWorkplaces();
+    setInterval(this._loadWorkplaces, 10000)
+  }
+
+  _loadWorkplaces() {
+    workplaceAPI.getWorkplaces()
+      .then(workplaces => {
+        this.workplaces = workplaces.sort((a, b) => {
+          if (a.Location > b.Location) { return 1 }
+          if (a.Location < b.Location) { return -1 }
+          if (a.Name > b.Name) { return 1 }
+          if (a.Name < b.Name) { return -1 }
+          return 0
+        });
+      }).catch(err => notification.error(err))
   }
 
   onNotify(e) {
@@ -72,11 +92,50 @@ export class SitOMat extends LitElement {
     };
   }
 
+
+
+  _groupByLocation(workplaces) {
+    return workplaces.reduce(function (r, a) {
+      r[a.Location] = r[a.Location] || [];
+      r[a.Location].push(a);
+      return r;
+    }, {});
+  }
+
+  renderWorkplace(w) {
+    return html`<sitomat-workplace .workplace=${w}></sitomat-workplace>`
+  }
+
+  renderWorkplaces(workplaces) {
+    var locationMap = this._groupByLocation(workplaces)
+    return Object.entries(locationMap).map(([key, workplaces]) => {
+      return html`
+              <div class="location">${key}</div>
+              ${workplaces.map(this.renderWorkplace)}
+          `;
+    })
+  }
+
+  _myWorkplaceString(workplaces) {
+    const myworkplace = this.workplaces.find(w => w.CurrentOwner == this.user.Name);
+    if (!myworkplace) {
+      return "kein Raum";
+    }
+    return myworkplace.Location + " " + myworkplace.Name;
+  }
+
   render() {
     return html`
     <header id="topbar">
 
-        <div id="title" id="title">Sit-o-Mat</div>
+        <div id="title">Sit-o-Mat</div>
+        
+          <div id="spacer">
+          ${this.user.Name ? html`
+            <span>heute für dich:</span> 
+            ${this._myWorkplaceString(this.workplaces)}
+          `: null}
+          </div>
         <sitomat-login id="login" @sitomat-login=${this.onLogin}></sitomat-login>
         <span>${this.user.Name}</span>
 
@@ -98,11 +157,17 @@ export class SitOMat extends LitElement {
     </header>
 
     <div id="page">
+
+      ${this.user.Name ? html`
         <sitomat-weekdays 
             .weekdays=${this.user.WeeklyRequests} 
             @sitomat-change-weeklyrequests=${e => this.onChangeWeeklyRequests(e)}>
-        </sitomat-weekdays>
-        <sitomat-workplace></sitomat-workplace >
+        </sitomat-weekdays>` : null
+      }
+
+
+        ${this.renderWorkplaces(this.workplaces)}
+        
     </div>
 
     <mwc-snackbar leading id="snackbarInfo"></mwc-snackbar>
@@ -115,16 +180,13 @@ export class SitOMat extends LitElement {
     return [
       css`
         :host {
-
           --mdc-theme-primary: #880e4f;
+          --mdc-theme-secondary: black;
     }
-      #title {
-        font-family: Pacifico, cursive;
-      }
     #page {
       max-width: 768px;
       margin: 0 auto;
-      padding: 24px 16px 0 16px;
+      padding: 24px 16px 16px 16px;
     }
 
 
@@ -143,11 +205,26 @@ export class SitOMat extends LitElement {
       align-items: center;
       background-color: var(--mdc-theme-primary, blue);
 
+      position: sticky;
+      top: 0;
+      z-index: 1;
+
     }
 
     #topbar #title {
-      flex-grow: 1;
       font-size: 24px;
+      font-family: Pacifico, cursive;
+
+    }
+
+    #topbar #spacer {
+      flex-grow: 1;
+      padding: 16px;
+      font-family: cursive;
+    }
+
+    #topbar #spacer span {
+      font-family: Pacifico, cursive;
     }
 
     #drawer {
@@ -162,6 +239,16 @@ export class SitOMat extends LitElement {
 
     #menu mwc-button {
       padding: 4px 8px;
+    }
+
+    sitomat-weekdays {
+      margin-bottom: 32px;
+    }
+
+    .location {
+      padding: 16px 16px 4px 16px;
+      font-size: 18px;
+      font-weight: lighter;
     }
     `,
 

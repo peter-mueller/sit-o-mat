@@ -20,7 +20,7 @@ export class SitomatWorkplace extends LitElement {
                 <div id="title">${this.workplace.Name}</div>
                 <div id="subtitle">${this.workplace.Location} - Rank ${this.workplace.Ranking}</div>
             </div>
-            <div id="owner">${this.workplace.CurrentOwner}</div>
+            <div id="owner">${this.workplace.CurrentOwner || "frei"}</div>
         `;
     }
 

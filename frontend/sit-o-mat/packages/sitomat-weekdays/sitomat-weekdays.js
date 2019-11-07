@@ -25,6 +25,8 @@ export class SitomatWeekdays extends LitElement {
     render() {
         return html`
 
+<div id="header">MEINE ANWESENHEIT</div>
+
 <div id="container" @change=${e => this.onChange(e)}>
         <div class="column">
             <div>Montag</div>
@@ -74,12 +76,31 @@ export class SitomatWeekdays extends LitElement {
     static get styles() {
         return [
             css`
+
+            :host {
+                display: block;
+                padding: 8px 16px 32px 16px;
+
+
+                background-color: white;
+                border-radius: 2px;
+                font-family: monospace;
+
+            }
+
+            #header {
+                padding: 8px 16px;
+                font-family: monospace;
+                text-align: center;
+
+            }
+
             #container {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-around;
                 flex-wrap: wrap;
-                padding: 8px 16px 32px 16px;
+            
             }
 
             .column {
