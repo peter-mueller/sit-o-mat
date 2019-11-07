@@ -1,0 +1,3 @@
+export SITOMAT_ADMINUSERNAME=admin
+export SITOMAT_ADMINPASSWORD=password
+export SITOMAT_HOST=localhost:8080
