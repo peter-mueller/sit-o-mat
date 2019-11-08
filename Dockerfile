@@ -3,7 +3,7 @@ FROM golang:1.13.4 AS SERVERBUILDER
 WORKDIR /go/src/app
 COPY . .
 RUN go mod download
-RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o sit-o-mat
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-w -s" -o sit-o-mat
 
 FROM scratch
 WORKDIR /go/bin/
