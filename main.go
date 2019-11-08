@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"context"
@@ -26,7 +27,9 @@ import (
 
 func userCollection() *docstore.Collection {
 	ctx := context.Background()
-	coll, err := docstore.OpenCollection(ctx, "mem://user/name")
+
+	url := lookupEnv("SITOMAT_COLLECTION_USER", "mem://user/name")
+	coll, err := docstore.OpenCollection(ctx, url)
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +37,8 @@ func userCollection() *docstore.Collection {
 }
 func workplaceCollection() *docstore.Collection {
 	ctx := context.Background()
-	coll, err := docstore.OpenCollection(ctx, "mem://workplace/name")
+	url := lookupEnv("SITOMAT_COLLECTION_WORKPLACE", "mem://workplace/name")
+	coll, err := docstore.OpenCollection(ctx, url)
 	if err != nil {
 		panic(err)
 	}
@@ -79,7 +83,7 @@ func main() {
 	fmt.Println("Starting Server")
 	srv := &http.Server{
 		Handler: corsDecorator{r},
-		Addr:    "127.0.0.1:8080",
+		Addr:    lookupEnv("SITOMAT_ADDR", "127.0.0.1:8080"),
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -133,4 +137,13 @@ func (c corsDecorator) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c.router.ServeHTTP(w, r)
+}
+
+func lookupEnv(env string, alternative string) string {
+	value, ok := os.LookupEnv(env)
+	if !ok {
+		log.Printf("Using default for %v: %v", env, alternative)
+		return alternative
+	}
+	return value
 }

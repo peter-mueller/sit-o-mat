@@ -55,11 +55,11 @@ func GeneratePassword() string {
 }
 
 func LoginAdmin(username string, password string) (ok bool) {
-	adminUsername, ok := os.LookupEnv("ADMIN_USERNAME")
+	adminUsername, ok := os.LookupEnv("SITOMAT_ADMIN_USERNAME")
 	if !ok {
 		adminUsername = "admin"
 	}
-	adminPassword, ok := os.LookupEnv("ADMIN_PASSWORD")
+	adminPassword, ok := os.LookupEnv("SITOMAT_ADMIN_PASSWORD")
 	if !ok {
 		adminPassword = "password"
 	}
