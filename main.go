@@ -20,8 +20,8 @@ import (
 
 	"gocloud.dev/docstore"
 
+	_ "gocloud.dev/docstore/gcpfirestore"
 	_ "gocloud.dev/docstore/memdocstore"
-	_ "gocloud.dev/docstore/awsdynamodb"
 
 	"errors"
 )
