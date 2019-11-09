@@ -15,6 +15,24 @@ export function getUser(username, password) {
     });
 }
 
+export function changePassword(newPassword) {
+  return fetch(
+    `${BACKEND_URL}/user/${authentication.username}`,
+    {
+      method: 'PATCH',
+      headers: authHeaders(authentication.username, authentication.password),
+      body: JSON.stringify({
+        op: "replace",
+        path: "/Password",
+        value: newPassword
+      })
+    }
+  ).then(res => {
+    checkResponse("Passwort konnten nicht geändert werden", res);
+    return res.json();
+  });
+}
+
 export function patchWeeklyRequests(weeklyRequests) {
     return fetch(
         `${BACKEND_URL}/user/${authentication.username}`,
