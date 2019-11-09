@@ -1,4 +1,4 @@
-export const BACKEND_URL = `http://localhost:8080`;
+export const BACKEND_URL = `http://sit-o-mat.appspot.com/workplace`;
 
 export function authHeaders(username, password) {
     var headers = new Headers()
