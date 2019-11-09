@@ -8,6 +8,7 @@ import '@material/mwc-snackbar';
 
 
 import '../sitomat-login/sitomat-login'
+import '../sitomat-password/sitomat-password'
 import '../sitomat-workplace/sitomat-workplace'
 import '../sitomat-weekdays/sitomat-weekdays'
 import * as notification from '../notification/notification';
@@ -137,6 +138,7 @@ export class SitOMat extends LitElement {
           `: null}
           </div>
         <sitomat-login id="login" @sitomat-login=${this.onLogin}></sitomat-login>
+        <sitomat-password id="password"></sitomat-password>
         <span>${this.user.Name}</span>
 
       ${!this.user.Name
@@ -146,6 +148,10 @@ export class SitOMat extends LitElement {
               @click=${e => this.shadowRoot.getElementById('login').open()}>
             </mwc-icon-button>`
         : html`
+          <mwc-icon-button 
+            icon="vpn_key" title="Change Password" slot="actionItems"
+            @click=${e => this.shadowRoot.getElementById('password').open()}>
+          </mwc-icon-button>
           <mwc-icon-button 
               icon="logout" title="Logout" slot="actionItems"
               @click=${e => this.logout()}>
