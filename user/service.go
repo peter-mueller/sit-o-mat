@@ -17,9 +17,12 @@ type Service struct {
 // A password is auto-generated.
 func (s *Service) RegisterUser(ctx context.Context, Name string) (User, error) {
 
+	pwd := GeneratePassword()
+	hash := hashAndSalt(pwd)
+
 	user := User{
 		Name:     Name,
-		Password: GeneratePassword(),
+		Password: hash,
 	}
 
 	err := s.Collection.Create(ctx, &user)
@@ -27,7 +30,10 @@ func (s *Service) RegisterUser(ctx context.Context, Name string) (User, error) {
 		return User{}, httperror.Wrap("failed to register new user", err)
 	}
 
-	return user, nil
+	return User{
+		Name:     Name,
+		Password: pwd,
+	}, nil
 }
 
 // FindUserByName by the name key
@@ -57,7 +63,7 @@ func (s *Service) LoginUser(ctx context.Context, user User) (bool, error) {
 		return false, httperror.Wrap("failed to validate user", err)
 	}
 
-	ok := givenPassword == user.Password
+	ok := comparePasswords(user.Password, givenPassword)
 	return ok, nil
 }
 

@@ -147,7 +147,7 @@ func (c *Controller) PatchUser(w http.ResponseWriter, r *http.Request, ps httpro
 			return
 		}
 
-		user.Password = password
+		user.Password = hashAndSalt(password)
 		user, err = c.Service.UpdateUser(ctx, user)
 		handle(err)
 
