@@ -11,7 +11,7 @@ type AssignWorkplaces struct {
 func (r AssignWorkplaces) Execute() {
 	req, _ := http.NewRequest(
 		"GET",
-		"http://"+config.Host+"/sitomat",
+		config.Host+"/sitomat",
 		nil)
 	req.SetBasicAuth(config.AdminUsername, config.AdminPassword)
 

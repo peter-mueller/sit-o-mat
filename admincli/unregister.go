@@ -28,7 +28,7 @@ func ParseUnregister(arguments []string) Unregister {
 func (r Unregister) Execute() {
 	req, _ := http.NewRequest(
 		"DELETE",
-		"http://"+config.Host+"/user/"+r.Name,
+		config.Host+"/user/"+r.Name,
 		nil)
 	req.SetBasicAuth(config.AdminUsername, config.AdminPassword)
 

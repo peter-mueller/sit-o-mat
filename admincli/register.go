@@ -40,7 +40,7 @@ func (r Register) Execute() {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://"+config.Host+"/user",
+		config.Host+"/user",
 		bytes.NewBuffer(body))
 
 	req.SetBasicAuth(config.AdminUsername, config.AdminPassword)

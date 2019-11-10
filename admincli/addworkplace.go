@@ -40,7 +40,7 @@ func (r AddWorkplace) Execute() {
 
 	req, _ := http.NewRequest(
 		"POST",
-		"http://"+config.Host+"/workplace",
+		config.Host+"/workplace",
 		bytes.NewBuffer(body))
 	req.SetBasicAuth(config.AdminUsername, config.AdminPassword)
 

@@ -9,4 +9,5 @@ FROM scratch
 WORKDIR /go/bin/
 COPY --from=SERVERBUILDER /go/src/app/sit-o-mat .
 COPY --from=SERVERBUILDER /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY sit-o-mat-firestore.json sit-o-mat-firestore.json
 ENTRYPOINT ["/go/bin/sit-o-mat"]
