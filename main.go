@@ -64,7 +64,6 @@ func main() {
 	sitomatController := sitomat.Controller{Service: &sitomatService}
 
 	r := httprouter.New()
-	// r.GlobalOPTIONS = http.HandlerFunc(corsHandler)
 	r.HandleOPTIONS = true
 	r.HandleMethodNotAllowed = true
 	r.GlobalOPTIONS = http.HandlerFunc(corsHandler)
@@ -113,16 +112,12 @@ func panicHandler(w http.ResponseWriter, r *http.Request, data interface{}) {
 }
 
 func corsHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get("Access-Control-Request-Method") != "" {
-		// Set CORS headers
-		header := w.Header()
-		header.Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, PUT")
-		header.Set("Access-Control-Allow-Headers", "*")
-	}
 
-	if origin := r.Header.Get("Origin"); origin != "" {
-		w.Header().Set("Access-Control-Allow-Origin", origin)
-	}
+	// Set CORS headers
+	header := w.Header()
+	header.Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, PUT")
+	header.Set("Access-Control-Allow-Headers", "*")
+	header.Set("Access-Control-Allow-Origin", "*")
 
 	// Adjust status code to 204
 	w.WriteHeader(http.StatusNoContent)
