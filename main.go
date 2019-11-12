@@ -7,8 +7,6 @@ import (
 	"os"
 	"time"
 
-	"context"
-
 	"github.com/julienschmidt/httprouter"
 
 	"github.com/peter-mueller/sit-o-mat/httperror"
@@ -18,43 +16,18 @@ import (
 
 	"fmt"
 
-	"gocloud.dev/docstore"
-
 	_ "gocloud.dev/docstore/gcpfirestore"
 	_ "gocloud.dev/docstore/memdocstore"
 
 	"errors"
 )
 
-func userCollection() *docstore.Collection {
-	ctx := context.Background()
-
-	url := lookupEnv("SITOMAT_COLLECTION_USER", "mem://user/name")
-	coll, err := docstore.OpenCollection(ctx, url)
-	if err != nil {
-		panic(err)
-	}
-	return coll
-}
-func workplaceCollection() *docstore.Collection {
-	ctx := context.Background()
-	url := lookupEnv("SITOMAT_COLLECTION_WORKPLACE", "mem://workplace/name")
-	coll, err := docstore.OpenCollection(ctx, url)
-	if err != nil {
-		panic(err)
-	}
-	return coll
-}
-
 func main() {
-	coll := userCollection()
-	defer coll.Close()
-	userService := user.Service{Collection: coll}
+
+	userService := user.Service{}
 	userController := user.Controller{Service: &userService}
 
-	workplaceColl := workplaceCollection()
-	defer workplaceColl.Close()
-	workplaceService := workplace.Service{Collection: workplaceColl}
+	workplaceService := workplace.Service{}
 	workplaceController := workplace.Controller{Service: &workplaceService}
 
 	sitomatService := sitomat.Service{
@@ -78,6 +51,7 @@ func main() {
 	r.GET("/workplace", workplaceController.GetAllWorkplaces)
 
 	r.GET("/sitomat", sitomatController.ManualAssign)
+
 	r.PanicHandler = panicHandler
 
 	fmt.Println("Starting Server")
