@@ -1,4 +1,1 @@
 cron:
-  - description: "daily workspace assignment"
-    url: /sitomat
-    schedule: every 24 hours

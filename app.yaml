@@ -11,18 +11,26 @@ automatic_scaling:
   cool_down_period_sec: 120 # default value
 readiness_check:
   path: "/workplace"
-  check_interval_sec: 5
-  timeout_sec: 4
+  check_interval_sec: 15
+  timeout_sec: 10
   failure_threshold: 2
   success_threshold: 2
-  app_start_timeout_sec: 20
+  app_start_timeout_sec: 40
+liveness_check:
+  path: "/workplace"
+  check_interval_sec: 300
+  timeout_sec: 10
+  failure_threshold: 2
+  success_threshold: 2
+  initial_delay_sec: 300
 resources:
   cpu: 1
   memory_gb: 2
   disk_size_gb: 10
 env_variables:
-  SITOMAT_COLLECTION_USER: "mem://user/name"
-  SITOMAT_COLLECTION_WORKPLACE: "mem://workplace/name"
+  SITOMAT_COLLECTION_USER: "firestore://projects/sit-o-mat-firestore/databases/(default)/documents/user?name_field=Name"
+  SITOMAT_COLLECTION_WORKPLACE: "firestore://projects/sit-o-mat-firestore/databases/(default)/documents/workplace?name_field=Name"
+  GOOGLE_APPLICATION_CREDENTIALS: "sit-o-mat-firestore.json"
   SITOMAT_ADDR: "0.0.0.0:8080"
   SITOMAT_ADMIN_USERNAME: "admin"
 #  SITOMAT_ADMIN_PASSWORD: "SET_BEFORE_DEPLOY"

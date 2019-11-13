@@ -10,7 +10,6 @@ import (
 
 // Service contains all actions on users
 type Service struct {
-	Collection *docstore.Collection
 }
 
 // RegisterUser as a new user in the sit-o-mat.
@@ -24,8 +23,11 @@ func (s *Service) RegisterUser(ctx context.Context, Name string) (User, error) {
 		Name:     Name,
 		Password: hash,
 	}
+	coll := userCollection()
+	defer coll.Close()
 
-	err := s.Collection.Create(ctx, &user)
+	err := coll.Create(ctx, &user)
+
 	if err != nil {
 		return User{}, httperror.Wrap("failed to register new user", err)
 	}
@@ -39,7 +41,12 @@ func (s *Service) RegisterUser(ctx context.Context, Name string) (User, error) {
 // FindUserByName by the name key
 func (s *Service) FindUserByName(ctx context.Context, Name string) (User, error) {
 	user := User{Name: Name}
-	err := s.Collection.Get(ctx, &user)
+
+	coll := userCollection()
+	defer coll.Close()
+
+	err := coll.Get(ctx, &user)
+
 	if err != nil {
 		return user, httperror.Wrap("failed to find user by name", err)
 	}
@@ -48,7 +55,11 @@ func (s *Service) FindUserByName(ctx context.Context, Name string) (User, error)
 
 // UpdateUser to the new values
 func (s *Service) UpdateUser(ctx context.Context, user User) (User, error) {
-	err := s.Collection.Put(ctx, &user)
+	coll := userCollection()
+	defer coll.Close()
+
+	err := coll.Put(ctx, &user)
+
 	if err != nil {
 		return user, httperror.Wrap("failed to put user", err)
 	}
@@ -58,7 +69,11 @@ func (s *Service) UpdateUser(ctx context.Context, user User) (User, error) {
 // LoginUser attempt, returns true if ok
 func (s *Service) LoginUser(ctx context.Context, user User) (bool, error) {
 	givenPassword := user.Password
-	err := s.Collection.Get(ctx, &user)
+	coll := userCollection()
+	defer coll.Close()
+
+	err := coll.Get(ctx, &user)
+
 	if err != nil {
 		return false, httperror.Wrap("failed to validate user", err)
 	}
@@ -69,7 +84,10 @@ func (s *Service) LoginUser(ctx context.Context, user User) (bool, error) {
 
 // DeleteUser from the application
 func (s *Service) DeleteUser(ctx context.Context, user User) error {
-	err := s.Collection.Delete(ctx, &user)
+	coll := userCollection()
+	defer coll.Close()
+
+	err := coll.Delete(ctx, &user)
 	if err != nil {
 		return httperror.Wrap("failed to delete user", err)
 	}
@@ -77,7 +95,10 @@ func (s *Service) DeleteUser(ctx context.Context, user User) error {
 }
 
 func (s *Service) FindAllUsers(ctx context.Context) ([]User, error) {
-	iter := s.Collection.Query().OrderBy("Name", docstore.Descending).Get(ctx)
+	coll := userCollection()
+	defer coll.Close()
+
+	iter := coll.Query().OrderBy("Name", docstore.Descending).Get(ctx)
 	defer iter.Stop()
 
 	workplaces := make([]User, 0)

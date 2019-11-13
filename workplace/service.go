@@ -10,12 +10,15 @@ import (
 
 // Service contains all actions workplaces
 type Service struct {
-	Collection *docstore.Collection
 }
 
 func (s *Service) DeleteWorkplaceByName(ctx context.Context, name string) error {
 	workplace := Workplace{Name: name}
-	err := s.Collection.Delete(ctx, &workplace)
+	coll := workplaceCollection()
+	defer coll.Close()
+
+	err := coll.Delete(ctx, &workplace)
+
 	if err != nil {
 		return httperror.Wrap("failed to delete workplace", err)
 	}
@@ -23,7 +26,11 @@ func (s *Service) DeleteWorkplaceByName(ctx context.Context, name string) error 
 }
 
 func (s *Service) UpdateWorkplace(ctx context.Context, w Workplace) (Workplace, error) {
-	err := s.Collection.Put(ctx, &w)
+	coll := workplaceCollection()
+	defer coll.Close()
+
+	err := coll.Put(ctx, &w)
+
 	if err != nil {
 		return w, httperror.Wrap("failed to update workplace", err)
 	}
@@ -31,7 +38,11 @@ func (s *Service) UpdateWorkplace(ctx context.Context, w Workplace) (Workplace, 
 }
 
 func (s *Service) CreateWorkplace(ctx context.Context, w Workplace) (Workplace, error) {
-	err := s.Collection.Create(ctx, &w)
+	coll := workplaceCollection()
+	defer coll.Close()
+
+	err := coll.Create(ctx, &w)
+
 	if err != nil {
 		return w, httperror.Wrap("failed to create workplace", err)
 	}
@@ -39,7 +50,11 @@ func (s *Service) CreateWorkplace(ctx context.Context, w Workplace) (Workplace, 
 }
 
 func (s *Service) FindAllWorkplacesSortByRating(ctx context.Context) ([]Workplace, error) {
-	iter := s.Collection.Query().OrderBy("Ranking", docstore.Ascending).Get(ctx)
+	coll := workplaceCollection()
+	defer coll.Close()
+
+	iter := coll.Query().OrderBy("Ranking", docstore.Ascending).Get(ctx)
+
 	defer iter.Stop()
 
 	workplaces := make([]Workplace, 0)
