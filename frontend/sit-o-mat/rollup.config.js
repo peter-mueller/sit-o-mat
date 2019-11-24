@@ -3,4 +3,23 @@
 
 // if you need to support IE11 use "modern-and-legacy-config" instead.
 import { createCompatibilityConfig } from '@open-wc/building-rollup';
-export default createCompatibilityConfig({ input: './index.html' });
+const cpy = require('rollup-plugin-cpy');
+
+const config =  createCompatibilityConfig({ input: './index.html' });
+
+module.exports = [
+  {
+    ...config[0],
+    plugins: [
+      ...config[0].plugins,
+      cpy({
+        files: ['manifest.json', 'sit-o-mat.png'],
+        dest: 'dist',
+        options: {
+          parents: true,
+        },
+      }),
+    ],
+  },
+  config[1],
+];
