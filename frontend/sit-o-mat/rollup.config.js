@@ -13,7 +13,7 @@ module.exports = [
     plugins: [
       ...config[0].plugins,
       cpy({
-        files: ['manifest.json', 'sit-o-mat.png'],
+        files: ['manifest.json', 'favicon.ico', 'sit-o-mat.png'],
         dest: 'dist',
         options: {
           parents: true,

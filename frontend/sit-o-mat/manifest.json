@@ -3,7 +3,7 @@
 	"lang" : "en",
 	"name" : "sit-o-mat",
 	"scope" : "/",
-	"display" : "browser",
+	"display" : "standalone",
 	"start_url" : "https://sit-o-mat.netlify.com/",
 	"short_name" : "sit-o-mat",
 	"theme_color" : "transparent",
