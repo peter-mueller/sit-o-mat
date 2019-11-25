@@ -45,6 +45,9 @@ func (s Service) AssignWorkplaces(ctx context.Context) error {
 	rand.Shuffle(len(filteredUsers), func(i, j int) { filteredUsers[i], filteredUsers[j] = filteredUsers[j], filteredUsers[i] })
 
 	for index, workplace := range workplaces {
+		if workplace.Fix {
+			break
+		}
 		if index >= len(filteredUsers) {
 			workplace.CurrentOwner = ""
 		} else {

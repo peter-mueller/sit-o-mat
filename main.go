@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -19,6 +20,8 @@ import (
 	_ "gocloud.dev/docstore/gcpfirestore"
 	_ "gocloud.dev/docstore/memdocstore"
 
+	"github.com/robfig/cron/v3"
+
 	"errors"
 )
 
@@ -35,6 +38,19 @@ func main() {
 		WorkplaceService: &workplaceService,
 	}
 	sitomatController := sitomat.Controller{Service: &sitomatService}
+
+	c := cron.New()
+	_, err := c.AddFunc("@midnight", func() {
+		ctx := context.Background()
+		err := sitomatController.Service.AssignWorkplaces(ctx)
+		if err != nil {
+			panic(err)
+		}
+	})
+	if err != nil {
+		panic(err)
+	}
+	c.Start()
 
 	r := httprouter.New()
 	r.HandleOPTIONS = true
