@@ -98,7 +98,7 @@ func (s *Service) FindAllUsers(ctx context.Context) ([]User, error) {
 	coll := userCollection()
 	defer coll.Close()
 
-	iter := coll.Query().OrderBy("Name", docstore.Descending).Get(ctx)
+	iter := coll.Query().OrderBy("Name", docstore.Ascending).Get(ctx)
 	defer iter.Stop()
 
 	workplaces := make([]User, 0)
