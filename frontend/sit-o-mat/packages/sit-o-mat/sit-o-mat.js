@@ -34,7 +34,6 @@ export class SitOMat extends LitElement {
 
     window.addEventListener('sitomat-notify', this.onNotify.bind(this));
 
-
     this._loadWorkplaces();
     //setInterval(this._loadWorkplaces, 10000)
   }
