@@ -37,6 +37,12 @@ func (c *Controller) CreateWorkplace(w http.ResponseWriter, r *http.Request, ps 
 }
 
 func (c *Controller) DeleteWorkplace(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	username, password, ok := r.BasicAuth()
+	if !ok || !user.LoginAdmin(username, password) {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	name := ps.ByName("name")
 	ctx := context.Background()
 	err := c.Service.DeleteWorkplaceByName(ctx, name)
