@@ -36,15 +36,15 @@ export class SitOMat extends LitElement {
 
 
     this._loadWorkplaces();
-    setInterval(this._loadWorkplaces, 10000)
+    //setInterval(this._loadWorkplaces, 10000)
   }
 
   _loadWorkplaces() {
     workplaceAPI.getWorkplaces()
       .then(workplaces => {
         this.workplaces = workplaces.sort((a, b) => {
-          if (a.Location > b.Location) { return 1 }
-          if (a.Location < b.Location) { return -1 }
+          if (a.Location > b.Location) { return -1 }
+          if (a.Location < b.Location) { return 1 }
           if (a.Name > b.Name) { return 1 }
           if (a.Name < b.Name) { return -1 }
           return 0
