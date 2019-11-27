@@ -106,7 +106,7 @@ func corsHandler(w http.ResponseWriter, r *http.Request) {
 	// Set CORS headers
 	header := w.Header()
 	header.Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PATCH, PUT")
-	header.Set("Access-Control-Allow-Headers", "*")
+	header.Set("Access-Control-Allow-Headers", "authorization")
 	header.Set("Access-Control-Allow-Origin", "*")
 
 	// Adjust status code to 204

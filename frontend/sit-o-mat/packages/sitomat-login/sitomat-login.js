@@ -60,7 +60,7 @@ export class SitomatLogin extends LitElement {
                     return;
                 }
 
-                this.login(username.value, password.value).then(
+                return this.login(username.value, password.value).then(
                     ok => {
                         if (ok) {
                             this.close();

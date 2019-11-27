@@ -46,7 +46,7 @@ func (s Service) AssignWorkplaces(ctx context.Context) error {
 
 	for index, workplace := range workplaces {
 		if workplace.Fix {
-			break
+			continue
 		}
 		if index >= len(filteredUsers) {
 			workplace.CurrentOwner = ""
