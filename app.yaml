@@ -10,14 +10,14 @@ automatic_scaling:
   max_num_instances: 1
   cool_down_period_sec: 120 # default value
 readiness_check:
-  path: "/workplace"
+  path: "/health"
   check_interval_sec: 15
   timeout_sec: 10
   failure_threshold: 2
   success_threshold: 2
-  app_start_timeout_sec: 40
+  app_start_timeout_sec: 10
 liveness_check:
-  path: "/workplace"
+  path: "/health"
   check_interval_sec: 300
   timeout_sec: 10
   failure_threshold: 2

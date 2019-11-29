@@ -68,6 +68,8 @@ func main() {
 
 	r.GET("/sitomat", sitomatController.ManualAssign)
 
+	r.GET("/health", healthHandler)
+
 	r.PanicHandler = panicHandler
 
 	fmt.Println("Starting Server")
@@ -115,6 +117,13 @@ func corsHandler(w http.ResponseWriter, r *http.Request) {
 
 type corsDecorator struct {
 	router *httprouter.Router
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("UP")
 }
 
 func (c corsDecorator) ServeHTTP(w http.ResponseWriter, r *http.Request) {
