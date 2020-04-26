@@ -9,6 +9,7 @@ import (
 type User struct {
 	Name           string
 	Password       string `json:"-"`
+	Fix            string `json:""`
 	WeeklyRequests WeeklyRequests
 }
 

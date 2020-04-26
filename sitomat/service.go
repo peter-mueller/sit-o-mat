@@ -34,26 +34,38 @@ func (s Service) AssignWorkplaces(ctx context.Context) error {
 		return httperror.Wrap("failed to load all workplaces", err)
 	}
 
-	filteredUsers := make([]user.User, 0)
-	for _, user := range users {
-		if user.WeeklyRequests.RequestForToday() {
-			filteredUsers = append(filteredUsers, user)
+	for index, _ := range workplaces {
+		workplaces[index].CurrentOwner = ""
+	}
+
+	for _, u := range users {
+		if u.WeeklyRequests.RequestForToday() && u.Fix != "" {
+			for index, wp := range workplaces {
+				if wp.Name == u.Fix {
+					workplaces[index].CurrentOwner = u.Name
+				}
+			}
 		}
 	}
 
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(filteredUsers), func(i, j int) { filteredUsers[i], filteredUsers[j] = filteredUsers[j], filteredUsers[i] })
+	shuffledUser := make([]user.User, 0)
+	for _, u := range users {
+		if u.WeeklyRequests.RequestForToday() && u.Fix == "" {
+			shuffledUser = append(shuffledUser, u)
+		}
+	}
 
-	for index, workplace := range workplaces {
-		if workplace.Fix {
-			continue
+	rand.Seed(int64(time.Now().YearDay() * time.Now().Year()))
+	rand.Shuffle(len(shuffledUser), func(i, j int) { shuffledUser[i], shuffledUser[j] = shuffledUser[j], shuffledUser[i] })
+
+	var index = 0
+	for _, wp := range workplaces {
+		if wp.CurrentOwner == "" && index < len(shuffledUser) {
+			wp.CurrentOwner = shuffledUser[index].Name
+			index++
 		}
-		if index >= len(filteredUsers) {
-			workplace.CurrentOwner = ""
-		} else {
-			workplace.CurrentOwner = filteredUsers[index].Name
-		}
-		_, err := s.WorkplaceService.UpdateWorkplace(ctx, workplace)
+
+		_, err := s.WorkplaceService.UpdateWorkplace(ctx, wp)
 		if err != nil {
 			return httperror.Wrap("failed to assign workplace", err)
 		}
