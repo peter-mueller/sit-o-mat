@@ -88,3 +88,4 @@ fabric.properties
 vendor/
 
 bin/
+/sit-o-mat-firestore.json
